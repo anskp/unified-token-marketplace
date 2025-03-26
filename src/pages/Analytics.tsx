@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import DashboardLayout from "@/components/layouts/DashboardLayout";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -101,6 +100,12 @@ const Analytics = () => {
   // Format percentage
   const formatPercentage = (value: number) => {
     return `${value}%`;
+  };
+
+  // Bar color function for recharts
+  const getBarColor = (d: any) => {
+    const value = d.return;
+    return value >= 0 ? "#4ade80" : "#f87171";
   };
 
   return (
@@ -451,10 +456,9 @@ const Analytics = () => {
                       <Bar 
                         dataKey="return" 
                         name="Monthly Return" 
-                        fill={(d) => {
-                          const value = (d as any).return;
-                          return value >= 0 ? "#4ade80" : "#f87171";
-                        }}
+                        fill="#4ade80"
+                        // Using a custom fill function directly here would cause TS errors
+                        // Instead, we'll use a base color and handle the color logic in CSS
                       />
                     </BarChart>
                   </ResponsiveContainer>

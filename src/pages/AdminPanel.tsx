@@ -16,6 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { getAllTokens, updateUserKYCStatus } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
+import { Label } from "@/components/ui/custom-label";
 import { 
   Users, 
   Coins, 
