@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Apple, Twitter } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { signIn } from "@/lib/auth";
+import { useAuth } from "@/context/AuthContext";
 
 const formSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters" }),
@@ -19,6 +20,8 @@ const formSchema = z.object({
 
 const Register = () => {
   const { toast } = useToast();
+  const { loginWithGoogle, loginWithTwitter, loginWithApple } = useAuth();
+  
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -55,12 +58,35 @@ const Register = () => {
   };
 
   const handleSocialLogin = (provider: string) => {
-    // In a real application, this would redirect to the OAuth provider
-    console.log(`Registering with ${provider}`);
-    toast({
-      title: `${provider} registration`,
-      description: `${provider} authentication would happen here.`,
-    });
+    switch(provider) {
+      case "Google":
+        loginWithGoogle();
+        toast({
+          title: "Google registration successful",
+          description: "Your account has been created.",
+        });
+        break;
+      case "Twitter":
+        loginWithTwitter();
+        toast({
+          title: "Twitter registration successful",
+          description: "Your account has been created.",
+        });
+        break;
+      case "Apple":
+        loginWithApple();
+        toast({
+          title: "Apple registration successful",
+          description: "Your account has been created.",
+        });
+        break;
+      default:
+        console.log(`Registering with ${provider}`);
+        toast({
+          title: `${provider} registration`,
+          description: `${provider} authentication would happen here.`,
+        });
+    }
   };
 
   return (
