@@ -1,4 +1,3 @@
-
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -9,7 +8,6 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Apple, Twitter } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { signIn } from "@/lib/auth";
 import { useAuth } from "@/context/AuthContext";
 
 const formSchema = z.object({
@@ -19,7 +17,7 @@ const formSchema = z.object({
 
 const Login = () => {
   const { toast } = useToast();
-  const { loginWithGoogle, loginWithTwitter, loginWithApple } = useAuth();
+  const { loginWithEmail, loginWithGoogle, loginWithTwitter, loginWithApple } = useAuth();
   
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -31,16 +29,7 @@ const Login = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      // In a real application, you would call your API here
-      // For demo purposes, we'll simulate a successful login
-      console.log("Login attempt with:", values);
-      
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Mock successful sign-in (in a real app, the token would come from the server)
-      const mockToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoiMTIzIiwibmFtZSI6IkpvaG4gRG9lIiwiZW1haWwiOiJqb2huZG9lQGdtYWlsLmNvbSJ9LCJleHAiOjE5MTYyMzkwMjJ9.fVd9kw4jyhMUQ-My_1m5YGGuHPrfEzeAK0ye4QlxqCk";
-      signIn(mockToken);
+      await loginWithEmail(values.email, values.password);
       
       toast({
         title: "Login successful",

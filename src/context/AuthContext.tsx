@@ -1,14 +1,20 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { Session, User, getSession } from "@/lib/auth";
+import { Session, User, getSession, generateToken, findUserByEmail, validatePassword, createUser } from "@/lib/auth";
 
 type AuthContextType = {
   session: Session | null;
   isLoading: boolean;
   setSession: (session: Session | null) => void;
+  loginWithEmail: (email: string, password: string) => Promise<void>;
   loginWithGoogle: () => void;
   loginWithTwitter: () => void;
   loginWithApple: () => void;
+  register: (userData: {
+    email: string;
+    password: string;
+    name?: string;
+  }) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -27,7 +33,72 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     loadSession();
   }, []);
 
-  // Social login methods
+  // Email/password login
+  const loginWithEmail = async (email: string, password: string) => {
+    try {
+      // In a real app with backend, this would be an API call
+      // For now, we simulate database auth
+      const user = await findUserByEmail(email);
+      
+      if (!user || !user.password) {
+        throw new Error("Invalid credentials");
+      }
+      
+      const isValidPassword = await validatePassword(password, user.password);
+      
+      if (!isValidPassword) {
+        throw new Error("Invalid credentials");
+      }
+      
+      // Generate token
+      const token = generateToken({
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        image: user.image,
+        role: user.role
+      });
+      
+      localStorage.setItem("auth-token", token);
+      const newSession = getSession();
+      setSession(newSession);
+      
+    } catch (error) {
+      console.error("Login failed:", error);
+      throw error;
+    }
+  };
+
+  // Register new user
+  const register = async (userData: { email: string; password: string; name?: string }) => {
+    try {
+      // Create user in database
+      const newUser = await createUser({
+        email: userData.email,
+        password: userData.password,
+        name: userData.name,
+        role: 'investor' // Default role
+      });
+      
+      // Generate token
+      const token = generateToken({
+        id: newUser.id,
+        name: newUser.name,
+        email: newUser.email,
+        role: newUser.role
+      });
+      
+      localStorage.setItem("auth-token", token);
+      const newSession = getSession();
+      setSession(newSession);
+      
+    } catch (error) {
+      console.error("Registration failed:", error);
+      throw error;
+    }
+  };
+
+  // Social login methods 
   const loginWithGoogle = () => {
     // In a real app, this would redirect to Google OAuth flow
     // For demo purposes, we'll simulate a successful login
@@ -63,9 +134,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       session, 
       isLoading, 
       setSession,
+      loginWithEmail,
       loginWithGoogle,
       loginWithTwitter,
-      loginWithApple
+      loginWithApple,
+      register
     }}>
       {children}
     </AuthContext.Provider>
