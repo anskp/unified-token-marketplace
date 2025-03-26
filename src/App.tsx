@@ -12,6 +12,14 @@ import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
+import Dashboard from "./pages/Dashboard";
+import TokenIssuance from "./pages/TokenIssuance";
+import Marketplace from "./pages/Marketplace";
+import KycVerification from "./pages/KycVerification";
+import Wallet from "./pages/Wallet";
+import AdminPanel from "./pages/AdminPanel";
+import Analytics from "./pages/Analytics";
+import UserProfile from "./pages/UserProfile";
 
 // Create a Query Client for React Query
 const queryClient = new QueryClient();
@@ -47,6 +55,70 @@ const App = () => (
               element={
                 <AuthGuard>
                   <Index />
+                </AuthGuard>
+              } 
+            />
+            <Route 
+              path="/dashboard" 
+              element={
+                <AuthGuard>
+                  <Dashboard />
+                </AuthGuard>
+              } 
+            />
+            <Route 
+              path="/tokens/issue" 
+              element={
+                <AuthGuard>
+                  <TokenIssuance />
+                </AuthGuard>
+              } 
+            />
+            <Route 
+              path="/marketplace" 
+              element={
+                <AuthGuard>
+                  <Marketplace />
+                </AuthGuard>
+              } 
+            />
+            <Route 
+              path="/kyc" 
+              element={
+                <AuthGuard>
+                  <KycVerification />
+                </AuthGuard>
+              } 
+            />
+            <Route 
+              path="/wallet" 
+              element={
+                <AuthGuard>
+                  <Wallet />
+                </AuthGuard>
+              } 
+            />
+            <Route 
+              path="/profile" 
+              element={
+                <AuthGuard>
+                  <UserProfile />
+                </AuthGuard>
+              } 
+            />
+            <Route 
+              path="/admin" 
+              element={
+                <AuthGuard>
+                  <AdminPanel />
+                </AuthGuard>
+              } 
+            />
+            <Route 
+              path="/analytics" 
+              element={
+                <AuthGuard>
+                  <Analytics />
                 </AuthGuard>
               } 
             />

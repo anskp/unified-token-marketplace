@@ -9,6 +9,8 @@ export type User = {
   email?: string | null;
   image?: string | null;
   role?: string | null;
+  kycStatus?: string | null;
+  wallet?: string | null;
 };
 
 export type Session = {
@@ -47,7 +49,7 @@ export const getSession = (): Session | null => {
 export const signIn = (token: string) => {
   localStorage.setItem("auth-token", token);
   // Redirect to home page or dashboard
-  window.location.href = "/";
+  window.location.href = "/dashboard";
 };
 
 // Sign out
@@ -101,7 +103,9 @@ export const generateToken = (user: User) => {
       name: user.name,
       email: user.email,
       image: user.image,
-      role: user.role
+      role: user.role,
+      kycStatus: user.kycStatus,
+      wallet: user.wallet
     },
     exp: Math.floor(expirationDate.getTime() / 1000)
   }));
