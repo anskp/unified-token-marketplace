@@ -5,7 +5,11 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import { AuthProvider } from "@/context/AuthContext";
+import { AuthGuard, GuestGuard } from "@/components/AuthGuard";
 import Index from "./pages/Index";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
 import NotFound from "./pages/NotFound";
 
 // Create a Query Client for React Query
@@ -24,17 +28,47 @@ const ScrollToTop = () => {
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <ScrollToTop />
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
+    <AuthProvider>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <ScrollToTop />
+          <Routes>
+            {/* Protected routes */}
+            <Route 
+              path="/" 
+              element={
+                <AuthGuard>
+                  <Index />
+                </AuthGuard>
+              } 
+            />
+            
+            {/* Guest routes */}
+            <Route 
+              path="/login" 
+              element={
+                <GuestGuard>
+                  <Login />
+                </GuestGuard>
+              } 
+            />
+            <Route 
+              path="/register" 
+              element={
+                <GuestGuard>
+                  <Register />
+                </GuestGuard>
+              } 
+            />
+            
+            {/* Public routes */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </TooltipProvider>
+    </AuthProvider>
   </QueryClientProvider>
 );
 

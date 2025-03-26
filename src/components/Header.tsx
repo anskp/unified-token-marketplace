@@ -2,10 +2,14 @@
 import React, { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/context/AuthContext";
+import { signOut } from "@/lib/auth";
+import { LogOut } from "lucide-react";
 
 const Header = () => {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const { session } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,6 +22,10 @@ const Header = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [scrolled]);
+
+  const handleLogout = () => {
+    signOut();
+  };
 
   return (
     <header
@@ -46,12 +54,23 @@ const Header = () => {
               {item}
             </Link>
           ))}
-          <Link
-            to="/contact"
-            className="text-sm bg-black text-white px-5 py-2.5 rounded-full transition-all hover:bg-opacity-90"
-          >
-            Contact
-          </Link>
+          
+          {session ? (
+            <button
+              onClick={handleLogout}
+              className="text-sm flex items-center gap-1.5 transition-all hover:opacity-60"
+            >
+              <LogOut size={16} />
+              Logout
+            </button>
+          ) : (
+            <Link
+              to="/login"
+              className="text-sm bg-black text-white px-5 py-2.5 rounded-full transition-all hover:bg-opacity-90"
+            >
+              Sign In
+            </Link>
+          )}
         </nav>
 
         <button
@@ -92,13 +111,27 @@ const Header = () => {
               {item}
             </Link>
           ))}
-          <Link
-            to="/contact"
-            className="text-xl bg-black text-white px-6 py-3 rounded-full mt-4 inline-block text-center transition-all hover:bg-opacity-80"
-            onClick={() => setMenuOpen(false)}
-          >
-            Contact
-          </Link>
+          
+          {session ? (
+            <button
+              onClick={() => {
+                handleLogout();
+                setMenuOpen(false);
+              }}
+              className="text-2xl font-medium flex items-center gap-2 transition-opacity hover:opacity-60"
+            >
+              <LogOut size={20} />
+              Logout
+            </button>
+          ) : (
+            <Link
+              to="/login"
+              className="text-xl bg-black text-white px-6 py-3 rounded-full mt-4 inline-block text-center transition-all hover:bg-opacity-80"
+              onClick={() => setMenuOpen(false)}
+            >
+              Sign In
+            </Link>
+          )}
         </nav>
       </div>
     </header>
